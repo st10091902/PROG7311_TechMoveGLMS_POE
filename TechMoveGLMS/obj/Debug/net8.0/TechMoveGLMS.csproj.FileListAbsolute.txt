@@ -139,3 +139,4 @@ C:\Users\marco\OneDrive\Desktop\School\Degree\Year 4\Prog7311\TechMoveGLMS\TechM
 C:\Users\marco\OneDrive\Desktop\School\Degree\Year 4\Prog7311\TechMoveGLMS\TechMoveGLMS\obj\Debug\net8.0\TechMove.D51FFE7E.Up2Date
 C:\Users\marco\OneDrive\Desktop\School\Degree\Year 4\Prog7311\TechMoveGLMS\TechMoveGLMS\bin\Debug\net8.0\Castle.Core.dll
 C:\Users\marco\OneDrive\Desktop\School\Degree\Year 4\Prog7311\TechMoveGLMS\TechMoveGLMS\bin\Debug\net8.0\Moq.dll
+C:\Users\marco\OneDrive\Desktop\School\Degree\Year 4\Prog7311\TechMoveGLMS\TechMoveGLMS\obj\Debug\net8.0\TechMoveGLMS.sourcelink.json

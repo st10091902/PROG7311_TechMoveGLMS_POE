@@ -2,7 +2,93 @@
     ViewData["Title"] = "Home Page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="container py-5">
+    <div class="text-center mb-5">
+        <h1 class="display-4 fw-bold">TechMove GLMS</h1>
+        <p class="lead text-muted">
+            Global Logistics Management System
+        </p>
+        <p class="mx-auto" style="max-width: 800px;">
+            TechMove GLMS is an ASP.NET Core MVC prototype designed to manage logistics operations
+            through client management, contract administration, service request processing,
+            PDF agreement handling, and automated USD to ZAR currency conversion.
+        </p>
+    </div>
+
+    <div class="row g-4 mb-5">
+        <div class="col-md-4">
+            <div class="card shadow-sm h-100 border-0">
+                <div class="card-body">
+                    <h3 class="card-title">Clients</h3>
+                    <p class="card-text">
+                        Create, view, edit, and manage logistics clients with their contact details
+                        and regional information.
+                    </p>
+                    <a asp-controller="Clients" asp-action="Index" class="btn btn-primary">
+                        Manage Clients
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card shadow-sm h-100 border-0">
+                <div class="card-body">
+                    <h3 class="card-title">Contracts</h3>
+                    <p class="card-text">
+                        Manage contracts linked to clients, upload signed PDF agreements,
+                        and filter contracts by status and date range.
+                    </p>
+                    <a asp-controller="Contracts" asp-action="Index" class="btn btn-success">
+                        Manage Contracts
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card shadow-sm h-100 border-0">
+                <div class="card-body">
+                    <h3 class="card-title">Service Requests</h3>
+                    <p class="card-text">
+                        Capture service requests linked to contracts, enforce workflow rules,
+                        and calculate local costs using live currency conversion.
+                    </p>
+                    <a asp-controller="ServiceRequests" asp-action="Index" class="btn btn-warning text-dark">
+                        Manage Requests
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-md-6">
+            <div class="p-4 bg-light rounded shadow-sm h-100">
+                <h4 class="mb-3">Core Features</h4>
+                <ul class="mb-0">
+                    <li>Client, Contract, and Service Request management</li>
+                    <li>PDF upload and download for signed agreements</li>
+                    <li>Workflow validation for expired and on-hold contracts</li>
+                    <li>USD to ZAR conversion using external API integration</li>
+                    <li>LINQ-based contract filtering by date and status</li>
+                    <li>Unit-tested business and validation logic</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="p-4 bg-dark text-white rounded shadow-sm h-100">
+                <h4 class="mb-3">System Overview</h4>
+                <p>
+                    This prototype was developed as a monolithic ASP.NET Core MVC application
+                    for the PROG7311 POE. It applies the Repository Pattern, service-layer business logic,
+                    Entity Framework Core, SQL Server integration, and external API consumption.
+                </p>
+                <p class="mb-0">
+                    Use the navigation bar above or the quick links on this page to access each module.
+                </p>
+            </div>
+        </div>
+    </div>
 </div>

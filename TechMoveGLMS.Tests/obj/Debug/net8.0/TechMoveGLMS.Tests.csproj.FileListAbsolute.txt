@@ -147,3 +147,4 @@ C:\Users\marco\OneDrive\Desktop\School\Degree\Year 4\Prog7311\TechMoveGLMS\TechM
 C:\Users\marco\OneDrive\Desktop\School\Degree\Year 4\Prog7311\TechMoveGLMS\TechMoveGLMS.Tests\obj\Debug\net8.0\TechMoveGLMS.Tests.pdb
 C:\Users\marco\OneDrive\Desktop\School\Degree\Year 4\Prog7311\TechMoveGLMS\TechMoveGLMS.Tests\obj\Debug\net8.0\TechMoveGLMS.Tests.genruntimeconfig.cache
 C:\Users\marco\OneDrive\Desktop\School\Degree\Year 4\Prog7311\TechMoveGLMS\TechMoveGLMS.Tests\obj\Debug\net8.0\ref\TechMoveGLMS.Tests.dll
+C:\Users\marco\OneDrive\Desktop\School\Degree\Year 4\Prog7311\TechMoveGLMS\TechMoveGLMS.Tests\obj\Debug\net8.0\TechMoveGLMS.Tests.sourcelink.json
