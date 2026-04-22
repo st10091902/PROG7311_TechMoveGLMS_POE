@@ -1,0 +1,44 @@
+﻿@model TechMoveGLMS.Models.Contract
+
+@{
+    ViewData["Title"] = "Contract Details";
+}
+
+<h1>Contract Details</h1>
+
+<div>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-3">Client</dt>
+        <dd class="col-sm-9">@Model.Client?.Name</dd>
+
+        <dt class="col-sm-3">Start Date</dt>
+        <dd class="col-sm-9">@Model.StartDate.ToShortDateString()</dd>
+
+        <dt class="col-sm-3">End Date</dt>
+        <dd class="col-sm-9">@Model.EndDate.ToShortDateString()</dd>
+
+        <dt class="col-sm-3">Status</dt>
+        <dd class="col-sm-9">@Model.Status</dd>
+
+        <dt class="col-sm-3">Service Level</dt>
+        <dd class="col-sm-9">@Model.ServiceLevel</dd>
+
+        <dt class="col-sm-3">Agreement</dt>
+        <dd class="col-sm-9">
+            @if (!string.IsNullOrEmpty(Model.SignedAgreementFilePath))
+            {
+                <a asp-action="DownloadAgreement" asp-route-id="@Model.ContractId" class="btn btn-success btn-sm">Download PDF</a>
+            }
+            else
+            {
+                <span>No file uploaded</span>
+            }
+        </dd>
+    </dl>
+</div>
+
+<div>
+    <a asp-action="Edit" asp-route-id="@Model.ContractId" class="btn btn-warning">Edit</a>
+    <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+</div>
