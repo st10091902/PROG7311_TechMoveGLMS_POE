@@ -3,12 +3,32 @@
   "WorkspaceRootPath": "C:\\Users\\marco\\OneDrive\\Desktop\\School\\Degree\\Year 4\\Prog7311\\TechMoveGLMS\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{28B78D8C-C0DF-45D8-9328-4D7F5EDDD2CD}|TechMoveGLMS\\TechMoveGLMS.csproj|c:\\users\\marco\\onedrive\\desktop\\school\\degree\\year 4\\prog7311\\techmoveglms\\techmoveglms\\views\\home\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{28B78D8C-C0DF-45D8-9328-4D7F5EDDD2CD}|TechMoveGLMS\\TechMoveGLMS.csproj|solutionrelative:techmoveglms\\views\\home\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+      "AbsoluteMoniker": "D:0:0:{1C7F9EB0-BFAF-483C-ABD9-ACAEC78B8276}|TechMoveGLMS.Api\\TechMoveGLMS.Api.csproj|c:\\users\\marco\\onedrive\\desktop\\school\\degree\\year 4\\prog7311\\techmoveglms\\techmoveglms.api\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{1C7F9EB0-BFAF-483C-ABD9-ACAEC78B8276}|TechMoveGLMS.Api\\TechMoveGLMS.Api.csproj|solutionrelative:techmoveglms.api\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{28B78D8C-C0DF-45D8-9328-4D7F5EDDD2CD}|TechMoveGLMS\\TechMoveGLMS.csproj|c:\\users\\marco\\onedrive\\desktop\\school\\degree\\year 4\\prog7311\\techmoveglms\\techmoveglms\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{28B78D8C-C0DF-45D8-9328-4D7F5EDDD2CD}|TechMoveGLMS\\TechMoveGLMS.csproj|solutionrelative:techmoveglms\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{1C7F9EB0-BFAF-483C-ABD9-ACAEC78B8276}|TechMoveGLMS.Api\\TechMoveGLMS.Api.csproj|c:\\users\\marco\\onedrive\\desktop\\school\\degree\\year 4\\prog7311\\techmoveglms\\techmoveglms.api\\dockerfile||{8B382828-6202-11D1-8870-0000F87579D2}",
+      "RelativeMoniker": "D:0:0:{1C7F9EB0-BFAF-483C-ABD9-ACAEC78B8276}|TechMoveGLMS.Api\\TechMoveGLMS.Api.csproj|solutionrelative:techmoveglms.api\\dockerfile||{8B382828-6202-11D1-8870-0000F87579D2}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{28B78D8C-C0DF-45D8-9328-4D7F5EDDD2CD}|TechMoveGLMS\\TechMoveGLMS.csproj|c:\\users\\marco\\onedrive\\desktop\\school\\degree\\year 4\\prog7311\\techmoveglms\\techmoveglms\\dockerfile||{8B382828-6202-11D1-8870-0000F87579D2}",
+      "RelativeMoniker": "D:0:0:{28B78D8C-C0DF-45D8-9328-4D7F5EDDD2CD}|TechMoveGLMS\\TechMoveGLMS.csproj|solutionrelative:techmoveglms\\dockerfile||{8B382828-6202-11D1-8870-0000F87579D2}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{8EC462FD-D22E-90A8-E5CE-7E832BA40C5D}|Solution Items{8EC462FD-D22E-90A8-E5CE-7E832BA40C5D}|C:\\Users\\marco\\OneDrive\\Desktop\\School\\Degree\\Year 4\\Prog7311\\TechMoveGLMS\\.dockerignore||{3B902123-F8A7-4915-9F01-361F908088D0}",
+      "RelativeMoniker": "D:0:0:{8EC462FD-D22E-90A8-E5CE-7E832BA40C5D}|Solution Items{8EC462FD-D22E-90A8-E5CE-7E832BA40C5D}|solutionrelative:.dockerignore||{3B902123-F8A7-4915-9F01-361F908088D0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{8EC462FD-D22E-90A8-E5CE-7E832BA40C5D}|Solution Items{8EC462FD-D22E-90A8-E5CE-7E832BA40C5D}|C:\\Users\\marco\\OneDrive\\Desktop\\School\\Degree\\Year 4\\Prog7311\\TechMoveGLMS\\docker-compose.yml||{8B382828-6202-11D1-8870-0000F87579D2}",
+      "RelativeMoniker": "D:0:0:{8EC462FD-D22E-90A8-E5CE-7E832BA40C5D}|Solution Items{8EC462FD-D22E-90A8-E5CE-7E832BA40C5D}|solutionrelative:docker-compose.yml||{8B382828-6202-11D1-8870-0000F87579D2}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B3BBBC3A-1E62-4240-ACD2-7A85A7358F74}|TechMoveGLMS.Tests\\TechMoveGLMS.Tests.csproj|c:\\users\\marco\\onedrive\\desktop\\school\\degree\\year 4\\prog7311\\techmoveglms\\techmoveglms.tests\\integrationtests\\apiendpointtests.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B3BBBC3A-1E62-4240-ACD2-7A85A7358F74}|TechMoveGLMS.Tests\\TechMoveGLMS.Tests.csproj|solutionrelative:techmoveglms.tests\\integrationtests\\apiendpointtests.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{1C7F9EB0-BFAF-483C-ABD9-ACAEC78B8276}|TechMoveGLMS.Api\\TechMoveGLMS.Api.csproj|c:\\users\\marco\\onedrive\\desktop\\school\\degree\\year 4\\prog7311\\techmoveglms\\techmoveglms.api\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{1C7F9EB0-BFAF-483C-ABD9-ACAEC78B8276}|TechMoveGLMS.Api\\TechMoveGLMS.Api.csproj|solutionrelative:techmoveglms.api\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{B3BBBC3A-1E62-4240-ACD2-7A85A7358F74}|TechMoveGLMS.Tests\\TechMoveGLMS.Tests.csproj|c:\\users\\marco\\onedrive\\desktop\\school\\degree\\year 4\\prog7311\\techmoveglms\\techmoveglms.tests\\unittest1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -22,37 +42,101 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 0,
+          "SelectedChildIndex": 6,
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "Index.cshtml",
-              "DocumentMoniker": "C:\\Users\\marco\\OneDrive\\Desktop\\School\\Degree\\Year 4\\Prog7311\\TechMoveGLMS\\TechMoveGLMS\\Views\\Home\\Index.cshtml",
-              "RelativeDocumentMoniker": "TechMoveGLMS\\Views\\Home\\Index.cshtml",
-              "ToolTip": "C:\\Users\\marco\\OneDrive\\Desktop\\School\\Degree\\Year 4\\Prog7311\\TechMoveGLMS\\TechMoveGLMS\\Views\\Home\\Index.cshtml",
-              "RelativeToolTip": "TechMoveGLMS\\Views\\Home\\Index.cshtml",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAF0AAAAGAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-04-22T21:21:16.528Z",
+              "DocumentIndex": 2,
+              "Title": "Dockerfile",
+              "DocumentMoniker": "C:\\Users\\marco\\OneDrive\\Desktop\\School\\Degree\\Year 4\\Prog7311\\TechMoveGLMS\\TechMoveGLMS\\Dockerfile",
+              "RelativeDocumentMoniker": "TechMoveGLMS\\Dockerfile",
+              "ToolTip": "C:\\Users\\marco\\OneDrive\\Desktop\\School\\Degree\\Year 4\\Prog7311\\TechMoveGLMS\\TechMoveGLMS\\Dockerfile",
+              "RelativeToolTip": "TechMoveGLMS\\Dockerfile",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABYAAAApAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001001|",
+              "WhenOpened": "2026-06-08T21:10:09.416Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 1,
-              "Title": "Program.cs",
-              "DocumentMoniker": "C:\\Users\\marco\\OneDrive\\Desktop\\School\\Degree\\Year 4\\Prog7311\\TechMoveGLMS\\TechMoveGLMS\\Program.cs",
-              "RelativeDocumentMoniker": "TechMoveGLMS\\Program.cs",
-              "ToolTip": "C:\\Users\\marco\\OneDrive\\Desktop\\School\\Degree\\Year 4\\Prog7311\\TechMoveGLMS\\TechMoveGLMS\\Program.cs",
-              "RelativeToolTip": "TechMoveGLMS\\Program.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAQAAAArAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-04-22T20:53:53.283Z",
+              "Title": "Dockerfile",
+              "DocumentMoniker": "C:\\Users\\marco\\OneDrive\\Desktop\\School\\Degree\\Year 4\\Prog7311\\TechMoveGLMS\\TechMoveGLMS.Api\\Dockerfile",
+              "RelativeDocumentMoniker": "TechMoveGLMS.Api\\Dockerfile",
+              "ToolTip": "C:\\Users\\marco\\OneDrive\\Desktop\\School\\Degree\\Year 4\\Prog7311\\TechMoveGLMS\\TechMoveGLMS.Api\\Dockerfile",
+              "RelativeToolTip": "TechMoveGLMS.Api\\Dockerfile",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABcAAAAtAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001001|",
+              "WhenOpened": "2026-06-08T21:04:45.464Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 3,
+              "Title": ".dockerignore",
+              "DocumentMoniker": "C:\\Users\\marco\\OneDrive\\Desktop\\School\\Degree\\Year 4\\Prog7311\\TechMoveGLMS\\.dockerignore",
+              "RelativeDocumentMoniker": ".dockerignore",
+              "ToolTip": "C:\\Users\\marco\\OneDrive\\Desktop\\School\\Degree\\Year 4\\Prog7311\\TechMoveGLMS\\.dockerignore",
+              "RelativeToolTip": ".dockerignore",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAcAAAAJAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001001|",
+              "WhenOpened": "2026-06-08T20:58:42.017Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "docker-compose.yml",
+              "DocumentMoniker": "C:\\Users\\marco\\OneDrive\\Desktop\\School\\Degree\\Year 4\\Prog7311\\TechMoveGLMS\\docker-compose.yml",
+              "RelativeDocumentMoniker": "docker-compose.yml",
+              "ToolTip": "C:\\Users\\marco\\OneDrive\\Desktop\\School\\Degree\\Year 4\\Prog7311\\TechMoveGLMS\\docker-compose.yml",
+              "RelativeToolTip": "docker-compose.yml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAD8AAAAOAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003775|",
+              "WhenOpened": "2026-06-08T20:57:59.177Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "appsettings.json",
+              "DocumentMoniker": "C:\\Users\\marco\\OneDrive\\Desktop\\School\\Degree\\Year 4\\Prog7311\\TechMoveGLMS\\TechMoveGLMS.Api\\appsettings.json",
+              "RelativeDocumentMoniker": "TechMoveGLMS.Api\\appsettings.json",
+              "ToolTip": "C:\\Users\\marco\\OneDrive\\Desktop\\School\\Degree\\Year 4\\Prog7311\\TechMoveGLMS\\TechMoveGLMS.Api\\appsettings.json",
+              "RelativeToolTip": "TechMoveGLMS.Api\\appsettings.json",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2026-06-08T20:33:59.819Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "ApiEndpointTests.cs",
+              "DocumentMoniker": "C:\\Users\\marco\\OneDrive\\Desktop\\School\\Degree\\Year 4\\Prog7311\\TechMoveGLMS\\TechMoveGLMS.Tests\\IntegrationTests\\ApiEndpointTests.cs",
+              "RelativeDocumentMoniker": "TechMoveGLMS.Tests\\IntegrationTests\\ApiEndpointTests.cs",
+              "ToolTip": "C:\\Users\\marco\\OneDrive\\Desktop\\School\\Degree\\Year 4\\Prog7311\\TechMoveGLMS\\TechMoveGLMS.Tests\\IntegrationTests\\ApiEndpointTests.cs",
+              "RelativeToolTip": "TechMoveGLMS.Tests\\IntegrationTests\\ApiEndpointTests.cs",
+              "ViewState": "AgIAABkAAAAAAAAAAAAAwD4AAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-06-08T20:33:38.488Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "Program.cs",
+              "DocumentMoniker": "C:\\Users\\marco\\OneDrive\\Desktop\\School\\Degree\\Year 4\\Prog7311\\TechMoveGLMS\\TechMoveGLMS.Api\\Program.cs",
+              "RelativeDocumentMoniker": "TechMoveGLMS.Api\\Program.cs",
+              "ToolTip": "C:\\Users\\marco\\OneDrive\\Desktop\\School\\Degree\\Year 4\\Prog7311\\TechMoveGLMS\\TechMoveGLMS.Api\\Program.cs",
+              "RelativeToolTip": "TechMoveGLMS.Api\\Program.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAADAAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-06-08T20:32:11.08Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
               "Title": "UnitTest1.cs",
               "DocumentMoniker": "C:\\Users\\marco\\OneDrive\\Desktop\\School\\Degree\\Year 4\\Prog7311\\TechMoveGLMS\\TechMoveGLMS.Tests\\UnitTest1.cs",
               "RelativeDocumentMoniker": "TechMoveGLMS.Tests\\UnitTest1.cs",

@@ -1,0 +1,8 @@
+**/bin/
+**/obj/
+**/.vs/
+**/.vscode/
+**/wwwroot/uploads/*
+.git
+.gitignore
+README.md

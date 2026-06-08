@@ -59,4 +59,6 @@ wwwroot\lib\jquery\dist\jquery.min.js
 wwwroot\lib\jquery\dist\jquery.min.map
 wwwroot\lib\jquery\LICENSE.txt
 wwwroot\uploads\3b180660-92d1-42e9-8ac5-86feb6e5a04d_PROG7311 POE Part 1.pdf
+wwwroot\uploads\902ef2b2-c1b7-498a-8396-789d80e05649_PROG7311 POE Part 1.pdf.pdf
+wwwroot\uploads\agreement.pdf
 wwwroot\uploads\eb2d617a-556a-4f9c-9d72-a6dd04167e2c_PROG7311 POE Part 1.pdf.pdf

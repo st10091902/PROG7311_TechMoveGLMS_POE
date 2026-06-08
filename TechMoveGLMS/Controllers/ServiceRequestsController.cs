@@ -1,35 +1,32 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using System.Net.Http.Json;
 using TechMoveGLMS.Models;
-using TechMoveGLMS.Repositories.Interfaces;
-using TechMoveGLMS.Services.Interfaces;
 using TechMoveGLMS.ViewModels;
 
 namespace TechMoveGLMS.Controllers
 {
     public class ServiceRequestsController : Controller
     {
-        private readonly IServiceRequestRepository _serviceRequestRepository;
-        private readonly IContractRepository _contractRepository;
-        private readonly IServiceRequestService _serviceRequestService;
-        private readonly ICurrencyService _currencyService;
+        private readonly IHttpClientFactory _httpClientFactory;
 
-        public ServiceRequestsController(
-            IServiceRequestRepository serviceRequestRepository,
-            IContractRepository contractRepository,
-            IServiceRequestService serviceRequestService,
-            ICurrencyService currencyService)
+        public ServiceRequestsController(IHttpClientFactory httpClientFactory)
         {
-            _serviceRequestRepository = serviceRequestRepository;
-            _contractRepository = contractRepository;
-            _serviceRequestService = serviceRequestService;
-            _currencyService = currencyService;
+            _httpClientFactory = httpClientFactory;
+        }
+
+        private HttpClient CreateApiClient()
+        {
+            return _httpClientFactory.CreateClient("TechMoveApi");
         }
 
         public async Task<IActionResult> Index()
         {
-            var serviceRequests = await _serviceRequestRepository.GetServiceRequestsWithContractAsync();
-            return View(serviceRequests);
+            var client = CreateApiClient();
+
+            var serviceRequests = await client.GetFromJsonAsync<IEnumerable<ServiceRequest>>("api/service-requests");
+
+            return View(serviceRequests ?? new List<ServiceRequest>());
         }
 
         public async Task<IActionResult> Details(int? id)
@@ -37,9 +34,14 @@ namespace TechMoveGLMS.Controllers
             if (id == null)
                 return NotFound();
 
-            var serviceRequest = await _serviceRequestRepository.GetServiceRequestWithContractByIdAsync(id.Value);
-            if (serviceRequest == null)
+            var client = CreateApiClient();
+
+            var response = await client.GetAsync($"api/service-requests/{id}");
+
+            if (!response.IsSuccessStatusCode)
                 return NotFound();
+
+            var serviceRequest = await response.Content.ReadFromJsonAsync<ServiceRequest>();
 
             return View(serviceRequest);
         }
@@ -58,39 +60,34 @@ namespace TechMoveGLMS.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(ServiceRequestFormViewModel viewModel)
         {
-            var contract = await _contractRepository.GetByIdAsync(viewModel.ContractId);
-
-            if (!_serviceRequestService.CanCreateServiceRequest(contract))
+            if (!ModelState.IsValid)
             {
-                ModelState.AddModelError("ContractId", "A Service Request cannot be created for a contract that is Expired or OnHold.");
+                viewModel.Contracts = await GetContractSelectListAsync();
+                return View(viewModel);
             }
 
-            if (ModelState.IsValid)
+            var serviceRequest = new ServiceRequest
             {
-                try
-                {
-                    decimal exchangeRate = await _currencyService.GetUsdToZarRateAsync();
-                    decimal convertedZar = _currencyService.ConvertUsdToZar(viewModel.CostInUSD, exchangeRate);
+                ContractId = viewModel.ContractId,
+                Description = viewModel.Description,
+                CostInUSD = viewModel.CostInUSD,
+                CostInZAR = 0,
+                Status = viewModel.Status
+            };
 
-                    var serviceRequest = new ServiceRequest
-                    {
-                        ContractId = viewModel.ContractId,
-                        Description = viewModel.Description,
-                        CostInUSD = viewModel.CostInUSD,
-                        CostInZAR = convertedZar,
-                        Status = viewModel.Status
-                    };
+            var client = CreateApiClient();
 
-                    await _serviceRequestRepository.AddAsync(serviceRequest);
-                    await _serviceRequestRepository.SaveAsync();
+            var response = await client.PostAsJsonAsync("api/service-requests", serviceRequest);
 
-                    return RedirectToAction(nameof(Index));
-                }
-                catch
-                {
-                    ModelState.AddModelError("", "Unable to retrieve exchange rate at this time. Please try again.");
-                }
-            }
+            if (response.IsSuccessStatusCode)
+                return RedirectToAction(nameof(Index));
+
+            var errorMessage = await response.Content.ReadAsStringAsync();
+
+            if (string.IsNullOrWhiteSpace(errorMessage))
+                errorMessage = "Unable to create service request through the API.";
+
+            ModelState.AddModelError("", errorMessage);
 
             viewModel.Contracts = await GetContractSelectListAsync();
             return View(viewModel);
@@ -101,7 +98,15 @@ namespace TechMoveGLMS.Controllers
             if (id == null)
                 return NotFound();
 
-            var serviceRequest = await _serviceRequestRepository.GetByIdAsync(id.Value);
+            var client = CreateApiClient();
+
+            var response = await client.GetAsync($"api/service-requests/{id}");
+
+            if (!response.IsSuccessStatusCode)
+                return NotFound();
+
+            var serviceRequest = await response.Content.ReadFromJsonAsync<ServiceRequest>();
+
             if (serviceRequest == null)
                 return NotFound();
 
@@ -123,40 +128,38 @@ namespace TechMoveGLMS.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(ServiceRequestFormViewModel viewModel)
         {
-            var contract = await _contractRepository.GetByIdAsync(viewModel.ContractId);
-
-            if (!_serviceRequestService.CanCreateServiceRequest(contract))
+            if (!ModelState.IsValid)
             {
-                ModelState.AddModelError("ContractId", "A Service Request cannot be linked to a contract that is Expired or OnHold.");
+                viewModel.Contracts = await GetContractSelectListAsync();
+                return View(viewModel);
             }
 
-            var serviceRequest = await _serviceRequestRepository.GetByIdAsync(viewModel.ServiceRequestId);
-            if (serviceRequest == null)
-                return NotFound();
-
-            if (ModelState.IsValid)
+            var serviceRequest = new ServiceRequest
             {
-                try
-                {
-                    decimal exchangeRate = await _currencyService.GetUsdToZarRateAsync();
-                    decimal convertedZar = _currencyService.ConvertUsdToZar(viewModel.CostInUSD, exchangeRate);
+                ServiceRequestId = viewModel.ServiceRequestId,
+                ContractId = viewModel.ContractId,
+                Description = viewModel.Description,
+                CostInUSD = viewModel.CostInUSD,
+                CostInZAR = viewModel.CostInZAR ?? 0,
+                Status = viewModel.Status
+            };
 
-                    serviceRequest.ContractId = viewModel.ContractId;
-                    serviceRequest.Description = viewModel.Description;
-                    serviceRequest.CostInUSD = viewModel.CostInUSD;
-                    serviceRequest.CostInZAR = convertedZar;
-                    serviceRequest.Status = viewModel.Status;
+            var client = CreateApiClient();
 
-                    _serviceRequestRepository.Update(serviceRequest);
-                    await _serviceRequestRepository.SaveAsync();
+            var response = await client.PutAsJsonAsync(
+                $"api/service-requests/{viewModel.ServiceRequestId}",
+                serviceRequest
+            );
 
-                    return RedirectToAction(nameof(Index));
-                }
-                catch
-                {
-                    ModelState.AddModelError("", "Unable to retrieve exchange rate at this time. Please try again.");
-                }
-            }
+            if (response.IsSuccessStatusCode)
+                return RedirectToAction(nameof(Index));
+
+            var errorMessage = await response.Content.ReadAsStringAsync();
+
+            if (string.IsNullOrWhiteSpace(errorMessage))
+                errorMessage = "Unable to update service request through the API.";
+
+            ModelState.AddModelError("", errorMessage);
 
             viewModel.Contracts = await GetContractSelectListAsync();
             return View(viewModel);
@@ -167,9 +170,14 @@ namespace TechMoveGLMS.Controllers
             if (id == null)
                 return NotFound();
 
-            var serviceRequest = await _serviceRequestRepository.GetServiceRequestWithContractByIdAsync(id.Value);
-            if (serviceRequest == null)
+            var client = CreateApiClient();
+
+            var response = await client.GetAsync($"api/service-requests/{id}");
+
+            if (!response.IsSuccessStatusCode)
                 return NotFound();
+
+            var serviceRequest = await response.Content.ReadFromJsonAsync<ServiceRequest>();
 
             return View(serviceRequest);
         }
@@ -178,21 +186,24 @@ namespace TechMoveGLMS.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var serviceRequest = await _serviceRequestRepository.GetByIdAsync(id);
-            if (serviceRequest != null)
-            {
-                _serviceRequestRepository.Delete(serviceRequest);
-                await _serviceRequestRepository.SaveAsync();
-            }
+            var client = CreateApiClient();
 
+            var response = await client.DeleteAsync($"api/service-requests/{id}");
+
+            if (response.IsSuccessStatusCode)
+                return RedirectToAction(nameof(Index));
+
+            ModelState.AddModelError("", "Unable to delete service request through the API.");
             return RedirectToAction(nameof(Index));
         }
 
         private async Task<IEnumerable<SelectListItem>> GetContractSelectListAsync()
         {
-            var contracts = await _contractRepository.GetContractsWithClientAsync();
+            var client = CreateApiClient();
 
-            return contracts.Select(c => new SelectListItem
+            var contracts = await client.GetFromJsonAsync<IEnumerable<Contract>>("api/contracts");
+
+            return (contracts ?? new List<Contract>()).Select(c => new SelectListItem
             {
                 Value = c.ContractId.ToString(),
                 Text = $"Contract #{c.ContractId} - {c.Client?.Name} ({c.Status})"

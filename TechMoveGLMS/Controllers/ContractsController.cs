@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using System.Net.Http.Json;
 using TechMoveGLMS.Models;
-using TechMoveGLMS.Repositories.Interfaces;
 using TechMoveGLMS.Services.Interfaces;
 using TechMoveGLMS.ViewModels;
 
@@ -9,33 +9,39 @@ namespace TechMoveGLMS.Controllers
 {
     public class ContractsController : Controller
     {
-        private readonly IContractRepository _contractRepository;
-        private readonly IClientRepository _clientRepository;
+        private readonly IHttpClientFactory _httpClientFactory;
         private readonly IWebHostEnvironment _webHostEnvironment;
         private readonly IFileValidationService _fileValidationService;
 
         public ContractsController(
-            IContractRepository contractRepository,
-            IClientRepository clientRepository,
+            IHttpClientFactory httpClientFactory,
             IWebHostEnvironment webHostEnvironment,
             IFileValidationService fileValidationService)
         {
-            _contractRepository = contractRepository;
-            _clientRepository = clientRepository;
+            _httpClientFactory = httpClientFactory;
             _webHostEnvironment = webHostEnvironment;
             _fileValidationService = fileValidationService;
         }
 
+        private HttpClient CreateApiClient()
+        {
+            return _httpClientFactory.CreateClient("TechMoveApi");
+        }
+
         public async Task<IActionResult> Index(DateTime? startDateFrom, DateTime? endDateTo, ContractStatus? status)
         {
-            var filteredContracts = await _contractRepository.FilterContractsAsync(startDateFrom, endDateTo, status);
+            var client = CreateApiClient();
+
+            var query = $"api/contracts?startDateFrom={startDateFrom:yyyy-MM-dd}&endDateTo={endDateTo:yyyy-MM-dd}&status={status}";
+
+            var contracts = await client.GetFromJsonAsync<IEnumerable<Contract>>(query);
 
             var viewModel = new ContractFilterViewModel
             {
                 StartDateFrom = startDateFrom,
                 EndDateTo = endDateTo,
                 Status = status,
-                Contracts = filteredContracts
+                Contracts = contracts ?? new List<Contract>()
             };
 
             return View(viewModel);
@@ -46,9 +52,14 @@ namespace TechMoveGLMS.Controllers
             if (id == null)
                 return NotFound();
 
-            var contract = await _contractRepository.GetContractWithClientByIdAsync(id.Value);
-            if (contract == null)
+            var client = CreateApiClient();
+
+            var response = await client.GetAsync($"api/contracts/{id}");
+
+            if (!response.IsSuccessStatusCode)
                 return NotFound();
+
+            var contract = await response.Content.ReadFromJsonAsync<Contract>();
 
             return View(contract);
         }
@@ -74,9 +85,6 @@ namespace TechMoveGLMS.Controllers
                 ModelState.AddModelError("EndDate", "End Date cannot be earlier than Start Date.");
             }
 
-            string? uniqueFileName = null;
-            string? relativeFilePath = null;
-
             if (viewModel.SignedAgreementFile != null)
             {
                 if (!_fileValidationService.IsPdfFile(viewModel.SignedAgreementFile.FileName))
@@ -85,41 +93,50 @@ namespace TechMoveGLMS.Controllers
                 }
             }
 
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                if (viewModel.SignedAgreementFile != null)
-                {
-                    string uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "uploads");
-                    Directory.CreateDirectory(uploadsFolder);
-
-                    uniqueFileName = Guid.NewGuid().ToString() + "_" + viewModel.SignedAgreementFile.FileName;
-                    string filePath = Path.Combine(uploadsFolder, uniqueFileName);
-
-                    using (var fileStream = new FileStream(filePath, FileMode.Create))
-                    {
-                        await viewModel.SignedAgreementFile.CopyToAsync(fileStream);
-                    }
-
-                    relativeFilePath = "/uploads/" + uniqueFileName;
-                }
-
-                var contract = new Contract
-                {
-                    ClientId = viewModel.ClientId,
-                    StartDate = viewModel.StartDate,
-                    EndDate = viewModel.EndDate,
-                    Status = viewModel.Status,
-                    ServiceLevel = viewModel.ServiceLevel,
-                    SignedAgreementFileName = uniqueFileName,
-                    SignedAgreementFilePath = relativeFilePath
-                };
-
-                await _contractRepository.AddAsync(contract);
-                await _contractRepository.SaveAsync();
-
-                return RedirectToAction(nameof(Index));
+                viewModel.Clients = await GetClientSelectListAsync();
+                return View(viewModel);
             }
 
+            string? uniqueFileName = null;
+            string? relativeFilePath = null;
+
+            if (viewModel.SignedAgreementFile != null)
+            {
+                string uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "uploads");
+                Directory.CreateDirectory(uploadsFolder);
+
+                uniqueFileName = Guid.NewGuid() + "_" + viewModel.SignedAgreementFile.FileName;
+                string filePath = Path.Combine(uploadsFolder, uniqueFileName);
+
+                using (var fileStream = new FileStream(filePath, FileMode.Create))
+                {
+                    await viewModel.SignedAgreementFile.CopyToAsync(fileStream);
+                }
+
+                relativeFilePath = "/uploads/" + uniqueFileName;
+            }
+
+            var contract = new Contract
+            {
+                ClientId = viewModel.ClientId,
+                StartDate = viewModel.StartDate,
+                EndDate = viewModel.EndDate,
+                Status = viewModel.Status,
+                ServiceLevel = viewModel.ServiceLevel,
+                SignedAgreementFileName = uniqueFileName,
+                SignedAgreementFilePath = relativeFilePath
+            };
+
+            var client = CreateApiClient();
+
+            var response = await client.PostAsJsonAsync("api/contracts", contract);
+
+            if (response.IsSuccessStatusCode)
+                return RedirectToAction(nameof(Index));
+
+            ModelState.AddModelError("", "Unable to create contract through the API.");
             viewModel.Clients = await GetClientSelectListAsync();
             return View(viewModel);
         }
@@ -129,7 +146,15 @@ namespace TechMoveGLMS.Controllers
             if (id == null)
                 return NotFound();
 
-            var contract = await _contractRepository.GetByIdAsync(id.Value);
+            var client = CreateApiClient();
+
+            var response = await client.GetAsync($"api/contracts/{id}");
+
+            if (!response.IsSuccessStatusCode)
+                return NotFound();
+
+            var contract = await response.Content.ReadFromJsonAsync<Contract>();
+
             if (contract == null)
                 return NotFound();
 
@@ -161,10 +186,6 @@ namespace TechMoveGLMS.Controllers
                 ModelState.AddModelError("EndDate", "End Date cannot be earlier than Start Date.");
             }
 
-            var contract = await _contractRepository.GetByIdAsync(id);
-            if (contract == null)
-                return NotFound();
-
             if (viewModel.SignedAgreementFile != null)
             {
                 if (!_fileValidationService.IsPdfFile(viewModel.SignedAgreementFile.FileName))
@@ -173,37 +194,53 @@ namespace TechMoveGLMS.Controllers
                 }
             }
 
-            if (ModelState.IsValid)
+            var client = CreateApiClient();
+
+            var existingResponse = await client.GetAsync($"api/contracts/{id}");
+
+            if (!existingResponse.IsSuccessStatusCode)
+                return NotFound();
+
+            var existingContract = await existingResponse.Content.ReadFromJsonAsync<Contract>();
+
+            if (existingContract == null)
+                return NotFound();
+
+            if (!ModelState.IsValid)
             {
-                if (viewModel.SignedAgreementFile != null)
-                {
-                    string uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "uploads");
-                    Directory.CreateDirectory(uploadsFolder);
-
-                    string uniqueFileName = Guid.NewGuid().ToString() + "_" + viewModel.SignedAgreementFile.FileName;
-                    string filePath = Path.Combine(uploadsFolder, uniqueFileName);
-
-                    using (var fileStream = new FileStream(filePath, FileMode.Create))
-                    {
-                        await viewModel.SignedAgreementFile.CopyToAsync(fileStream);
-                    }
-
-                    contract.SignedAgreementFileName = uniqueFileName;
-                    contract.SignedAgreementFilePath = "/uploads/" + uniqueFileName;
-                }
-
-                contract.ClientId = viewModel.ClientId;
-                contract.StartDate = viewModel.StartDate;
-                contract.EndDate = viewModel.EndDate;
-                contract.Status = viewModel.Status;
-                contract.ServiceLevel = viewModel.ServiceLevel;
-
-                _contractRepository.Update(contract);
-                await _contractRepository.SaveAsync();
-
-                return RedirectToAction(nameof(Index));
+                viewModel.Clients = await GetClientSelectListAsync();
+                return View(viewModel);
             }
 
+            if (viewModel.SignedAgreementFile != null)
+            {
+                string uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "uploads");
+                Directory.CreateDirectory(uploadsFolder);
+
+                string uniqueFileName = Guid.NewGuid() + "_" + viewModel.SignedAgreementFile.FileName;
+                string filePath = Path.Combine(uploadsFolder, uniqueFileName);
+
+                using (var fileStream = new FileStream(filePath, FileMode.Create))
+                {
+                    await viewModel.SignedAgreementFile.CopyToAsync(fileStream);
+                }
+
+                existingContract.SignedAgreementFileName = uniqueFileName;
+                existingContract.SignedAgreementFilePath = "/uploads/" + uniqueFileName;
+            }
+
+            existingContract.ClientId = viewModel.ClientId;
+            existingContract.StartDate = viewModel.StartDate;
+            existingContract.EndDate = viewModel.EndDate;
+            existingContract.Status = viewModel.Status;
+            existingContract.ServiceLevel = viewModel.ServiceLevel;
+
+            var updateResponse = await client.PutAsJsonAsync($"api/contracts/{id}", existingContract);
+
+            if (updateResponse.IsSuccessStatusCode)
+                return RedirectToAction(nameof(Index));
+
+            ModelState.AddModelError("", "Unable to update contract through the API.");
             viewModel.Clients = await GetClientSelectListAsync();
             return View(viewModel);
         }
@@ -213,9 +250,14 @@ namespace TechMoveGLMS.Controllers
             if (id == null)
                 return NotFound();
 
-            var contract = await _contractRepository.GetContractWithClientByIdAsync(id.Value);
-            if (contract == null)
+            var client = CreateApiClient();
+
+            var response = await client.GetAsync($"api/contracts/{id}");
+
+            if (!response.IsSuccessStatusCode)
                 return NotFound();
+
+            var contract = await response.Content.ReadFromJsonAsync<Contract>();
 
             return View(contract);
         }
@@ -224,23 +266,35 @@ namespace TechMoveGLMS.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var contract = await _contractRepository.GetByIdAsync(id);
-            if (contract != null)
-            {
-                _contractRepository.Delete(contract);
-                await _contractRepository.SaveAsync();
-            }
+            var client = CreateApiClient();
 
+            var response = await client.DeleteAsync($"api/contracts/{id}");
+
+            if (response.IsSuccessStatusCode)
+                return RedirectToAction(nameof(Index));
+
+            ModelState.AddModelError("", "Unable to delete contract through the API.");
             return RedirectToAction(nameof(Index));
         }
 
         public async Task<IActionResult> DownloadAgreement(int id)
         {
-            var contract = await _contractRepository.GetByIdAsync(id);
+            var client = CreateApiClient();
+
+            var response = await client.GetAsync($"api/contracts/{id}");
+
+            if (!response.IsSuccessStatusCode)
+                return NotFound();
+
+            var contract = await response.Content.ReadFromJsonAsync<Contract>();
+
             if (contract == null || string.IsNullOrEmpty(contract.SignedAgreementFilePath))
                 return NotFound();
 
-            string fullPath = Path.Combine(_webHostEnvironment.WebRootPath, contract.SignedAgreementFilePath.TrimStart('/').Replace("/", Path.DirectorySeparatorChar.ToString()));
+            string fullPath = Path.Combine(
+                _webHostEnvironment.WebRootPath,
+                contract.SignedAgreementFilePath.TrimStart('/').Replace("/", Path.DirectorySeparatorChar.ToString())
+            );
 
             if (!System.IO.File.Exists(fullPath))
                 return NotFound();
@@ -250,9 +304,11 @@ namespace TechMoveGLMS.Controllers
 
         private async Task<IEnumerable<SelectListItem>> GetClientSelectListAsync()
         {
-            var clients = await _clientRepository.GetAllAsync();
+            var client = CreateApiClient();
 
-            return clients.Select(c => new SelectListItem
+            var clients = await client.GetFromJsonAsync<IEnumerable<Client>>("api/clients");
+
+            return (clients ?? new List<Client>()).Select(c => new SelectListItem
             {
                 Value = c.ClientId.ToString(),
                 Text = c.Name

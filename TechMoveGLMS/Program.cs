@@ -1,73 +1,36 @@
-using Microsoft.EntityFrameworkCore;
-using TechMoveGLMS.Data;
-using TechMoveGLMS.Models;
-using TechMoveGLMS.Repositories;
-using TechMoveGLMS.Repositories.Interfaces;
 using TechMoveGLMS.Services;
-using TechMoveGLMS.Services;
-using TechMoveGLMS.Services.Interfaces;
 using TechMoveGLMS.Services.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+// Add MVC services.
 builder.Services.AddControllersWithViews();
 
-builder.Services.AddScoped<IClientRepository, ClientRepository>();
+// Register HttpClient for the backend API.
+var apiBaseUrl = builder.Configuration["ApiSettings:BaseUrl"];
 
-builder.Services.AddScoped<IContractRepository, ContractRepository>();
+var apiKey = builder.Configuration["ApiSettings:ApiKey"];
 
-builder.Services.AddScoped<IServiceRequestRepository, ServiceRequestRepository>();
+if (string.IsNullOrWhiteSpace(apiBaseUrl))
+{
+    throw new InvalidOperationException("ApiSettings:BaseUrl is missing from appsettings.json.");
+}
 
-builder.Services.AddScoped<IServiceRequestService, ServiceRequestService>();
+if (string.IsNullOrWhiteSpace(apiKey))
+{
+    throw new InvalidOperationException("ApiSettings:ApiKey is missing from appsettings.json.");
+}
 
-builder.Services.AddHttpClient<ICurrencyService, CurrencyService>();
+builder.Services.AddHttpClient("TechMoveApi", client =>
+{
+    client.BaseAddress = new Uri(apiBaseUrl);
+    client.DefaultRequestHeaders.Add("X-API-KEY", apiKey);
+});
 
-builder.Services.AddScoped<IServiceRequestService, ServiceRequestService>();
-
-builder.Services.AddHttpClient<ICurrencyService, CurrencyService>();
-
+// Used by MVC frontend to validate uploaded contract PDF files.
 builder.Services.AddScoped<IFileValidationService, FileValidationService>();
 
-builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
-
 var app = builder.Build();
-
-using (var scope = app.Services.CreateScope())
-{
-    var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-
-    if (!context.Clients.Any())
-    {
-        var client1 = new Client { Name = "ABC Logistics", ContactDetails = "abc@mail.com", Region = "Gauteng" };
-        var client2 = new Client { Name = "Global Freight", ContactDetails = "global@mail.com", Region = "Western Cape" };
-
-        context.Clients.AddRange(client1, client2);
-        context.SaveChanges();
-
-        context.Contracts.AddRange(
-            new Contract
-            {
-                ClientId = client1.ClientId,
-                StartDate = DateTime.Today.AddMonths(-2),
-                EndDate = DateTime.Today.AddMonths(2),
-                Status = ContractStatus.Active,
-                ServiceLevel = "Premium"
-            },
-            new Contract
-            {
-                ClientId = client2.ClientId,
-                StartDate = DateTime.Today.AddMonths(-6),
-                EndDate = DateTime.Today.AddMonths(-1),
-                Status = ContractStatus.Expired,
-                ServiceLevel = "Standard"
-            }
-        );
-
-        context.SaveChanges();
-    }
-}
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())

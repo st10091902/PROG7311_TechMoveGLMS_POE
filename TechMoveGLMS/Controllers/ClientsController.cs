@@ -1,129 +1,155 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using System.Net.Http.Json;
 using TechMoveGLMS.Models;
-using TechMoveGLMS.Repositories.Interfaces;
 
 namespace TechMoveGLMS.Controllers
 {
     public class ClientsController : Controller
     {
-        private readonly IClientRepository _clientRepository;
+        private readonly IHttpClientFactory _httpClientFactory;
 
-        public ClientsController(IClientRepository clientRepository)
+        public ClientsController(IHttpClientFactory httpClientFactory)
         {
-            _clientRepository = clientRepository;
+            _httpClientFactory = httpClientFactory;
         }
 
-        // GET: Clients
+        private HttpClient CreateApiClient()
+        {
+            return _httpClientFactory.CreateClient("TechMoveApi");
+        }
+
         public async Task<IActionResult> Index()
         {
-            var clients = await _clientRepository.GetAllAsync();
-            return View(clients);
+            var client = CreateApiClient();
+
+            try
+            {
+                var response = await client.GetAsync("api/clients");
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    ModelState.AddModelError("", "Unable to load clients from the API.");
+                    return View(new List<Client>());
+                }
+
+                var clients = await response.Content.ReadFromJsonAsync<IEnumerable<Client>>();
+
+                return View(clients ?? new List<Client>());
+            }
+            catch
+            {
+                ModelState.AddModelError("", "The API is not available. Please make sure TechMoveGLMS.Api is running.");
+                return View(new List<Client>());
+            }
         }
 
-        // GET: Clients/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
-            {
                 return NotFound();
-            }
 
-            var client = await _clientRepository.GetByIdAsync(id.Value);
-            if (client == null)
-            {
+            var client = CreateApiClient();
+
+            var result = await client.GetAsync($"api/clients/{id}");
+
+            if (!result.IsSuccessStatusCode)
                 return NotFound();
-            }
 
-            return View(client);
+            var selectedClient = await result.Content.ReadFromJsonAsync<Client>();
+
+            return View(selectedClient);
         }
 
-        // GET: Clients/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: Clients/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(Client client)
+        public async Task<IActionResult> Create(Client clientModel)
         {
-            if (ModelState.IsValid)
-            {
-                await _clientRepository.AddAsync(client);
-                await _clientRepository.SaveAsync();
-                return RedirectToAction(nameof(Index));
-            }
+            if (!ModelState.IsValid)
+                return View(clientModel);
 
-            return View(client);
+            var client = CreateApiClient();
+
+            var response = await client.PostAsJsonAsync("api/clients", clientModel);
+
+            if (response.IsSuccessStatusCode)
+                return RedirectToAction(nameof(Index));
+
+            ModelState.AddModelError("", "Unable to create client through the API.");
+            return View(clientModel);
         }
 
-        // GET: Clients/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
-            {
                 return NotFound();
-            }
 
-            var client = await _clientRepository.GetByIdAsync(id.Value);
-            if (client == null)
-            {
+            var client = CreateApiClient();
+
+            var result = await client.GetAsync($"api/clients/{id}");
+
+            if (!result.IsSuccessStatusCode)
                 return NotFound();
-            }
 
-            return View(client);
+            var clientModel = await result.Content.ReadFromJsonAsync<Client>();
+
+            return View(clientModel);
         }
 
-        // POST: Clients/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, Client client)
+        public async Task<IActionResult> Edit(int id, Client clientModel)
         {
-            if (id != client.ClientId)
-            {
+            if (id != clientModel.ClientId)
                 return NotFound();
-            }
 
-            if (ModelState.IsValid)
-            {
-                _clientRepository.Update(client);
-                await _clientRepository.SaveAsync();
+            if (!ModelState.IsValid)
+                return View(clientModel);
+
+            var client = CreateApiClient();
+
+            var response = await client.PutAsJsonAsync($"api/clients/{id}", clientModel);
+
+            if (response.IsSuccessStatusCode)
                 return RedirectToAction(nameof(Index));
-            }
 
-            return View(client);
+            ModelState.AddModelError("", "Unable to update client through the API.");
+            return View(clientModel);
         }
 
-        // GET: Clients/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
-            {
                 return NotFound();
-            }
 
-            var client = await _clientRepository.GetByIdAsync(id.Value);
-            if (client == null)
-            {
+            var client = CreateApiClient();
+
+            var result = await client.GetAsync($"api/clients/{id}");
+
+            if (!result.IsSuccessStatusCode)
                 return NotFound();
-            }
 
-            return View(client);
+            var clientModel = await result.Content.ReadFromJsonAsync<Client>();
+
+            return View(clientModel);
         }
 
-        // POST: Clients/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var client = await _clientRepository.GetByIdAsync(id);
-            if (client != null)
-            {
-                _clientRepository.Delete(client);
-                await _clientRepository.SaveAsync();
-            }
+            var client = CreateApiClient();
 
+            var response = await client.DeleteAsync($"api/clients/{id}");
+
+            if (response.IsSuccessStatusCode)
+                return RedirectToAction(nameof(Index));
+
+            ModelState.AddModelError("", "Unable to delete client through the API.");
             return RedirectToAction(nameof(Index));
         }
     }
